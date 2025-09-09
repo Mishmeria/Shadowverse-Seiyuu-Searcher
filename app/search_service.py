@@ -9,6 +9,9 @@ with open(Data_DIR / "cards_slim.json", encoding="utf-8") as f:
 with open(Data_DIR / "MAPPING.json", encoding="utf-8") as f:
     MAPPING = json.load(f)
 
+with open(Data_DIR / "Seiyuu_translate.json", encoding="utf-8") as f:
+    CVMAP = json.load(f)
+
 BY_NAME = {c["name_en"].lower(): c for c in CARDS if c.get("name_en")}
 
 def suggest_names(query: str, limit:int = 10):
@@ -22,4 +25,9 @@ def suggest_names(query: str, limit:int = 10):
 
 def get_cv(name:str):
     card = BY_NAME.get(name.lower())
-    return card["cv_jp"] if card else None
+    jp = card.get("cv_jp")
+
+    en = CVMAP.get(jp)
+    if en:
+        return f"{jp} ({en})"
+    return jp
